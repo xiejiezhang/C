@@ -79,7 +79,7 @@ extern uchar const RX_ADDRESS[RX_ADDR_WIDTH];//;RX address
 void nrfRxModeSet (void);
 uchar nrfPacketRx (uchar *pucRxBuf);
 void nrfSetTxMode (uchar *pucTxBuf);
-
+uchar checkACK();
 uchar nrfInit(void);
 
 #endif   //_NRF_24L01_

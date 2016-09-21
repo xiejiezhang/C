@@ -44,6 +44,13 @@
 #define SCLK_CLR  (PORTC &= ~(0x01<<SCLK_BIT))
 #define SCLK_SET   (PORTC |=   0x01<<SCLK_BIT)
 
+#define MOSI_CLR  (PORTC &= ~(0x01<<MOSI_BIT))
+#define MOSI_SET   (PORTC |=   0x01<<MOSI_BIT)
+
+#define MISO_CLR  (PORTC &= ~(0x01<<MISO_BIT))
+#define MISO_SET   (PORTC |=   0x01<<MISO_BIT)
+
+#define IRQ_VAL ((PORTC & (0x01 << IRQ_BIT)) ? 1 : 0 )
 uchar spiBufWrite(uchar ucReg, uchar *pucBuf, uchar ucN);
 uchar spiBufRead(uchar ucReg, uchar *pucBuf, uchar ucN);
 uchar spiRegRead (uchar ucReg);

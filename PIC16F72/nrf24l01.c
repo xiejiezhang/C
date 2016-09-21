@@ -16,14 +16,15 @@ uchar nrfInit(void)
     usDelay(20);//让系统什么都不干
 	CE_CLR;     //待机模式1   
 	CSN_SET;    //片选无效 
-	SCLK_SET;
+	SCLK_CLR;
     
-    //spiRegRW(WRITE_REG+CONFIG, 0x0e);      // CRC使能，16位CRC校验，上电 
+    spiRegRW(WRITE_REG+CONFIG, 0x0E);      // CRC使能，16位CRC校验，上电 
    
 	//sta=spiRegRead(READ_REG+CONFIG);//发送数据后读取状态寄存器
-	//if (sta != 0x0e) {
-    //    ret  = 1;
-    //}
+    spiBufRead(READ_REG+CONFIG, &sta, 1);//发送数据后读取状态寄存器
+	if (sta != 0x0e) {
+        ret  = 1;
+    }
     return ret;
     
 }
@@ -34,14 +35,14 @@ void nrfSetTxMode(uchar *TxDate)
     CE_CLR; 
    	spiBufWrite(WRITE_REG+TX_ADDR,TxAddr,TX_ADDR_WIDTH);//写寄存器指令+接收地址使能指令+接收地址+地址宽度
 	spiBufWrite(WRITE_REG+RX_ADDR_P0,TxAddr,TX_ADDR_WIDTH);//为了应答接收设备，接收通道0地址和发送地址相同
-	spiBufWrite(TX_PLOAD_WIDTH,TxDate,TX_PLOAD_WIDTH);//写入数据 
+	spiBufWrite(WR_TX_PLOAD,TxDate,TX_PLOAD_WIDTH);//写入数据 
 	/******下面有关寄存器配置**************/
   	spiRegRW(WRITE_REG+EN_AA,0x01);       // 使能接收通道0自动应答
   	spiRegRW(WRITE_REG+EN_RXADDR,0x01);   // 使能接收通道0
   	spiRegRW(WRITE_REG+SETUP_RETR,0x0a);  // 自动重发延时等待250us+86us，自动重发10次
   	spiRegRW(WRITE_REG+RF_CH,0x40);       // 选择射频通道0x40
   	spiRegRW(WRITE_REG+RF_SETUP,0x07);    // 数据传输率1Mbps，发射功率0dBm，低噪声放大器增益
-	spiRegRW(WRITE_REG+CONFIG,0x0e);      // CRC使能，16位CRC校验，上电  
+	spiRegRW(WRITE_REG+CONFIG,0x0e);      // CRC使能，16位CRC校验，上电 
 	CE_SET;
 	usDelay(10);//保持10us秒以上
 }
@@ -65,6 +66,7 @@ void nrfRxModeSet()
 /****************************检测应答信号******************************/
 uchar checkACK()
 {  //用于发射
+    while (IRQ_VAL);
 	uchar sta = spiRegRead(READ_REG+STATUS);   // 返回状态寄存器
 	if((sta & (1 << 4)) || (sta & (1 << 5)))   //发送完毕中断
 	{

@@ -46,7 +46,7 @@ void spiInit (void)
 
     CE_SET;                                                             /* 使能芯片                     */                                                    
     CSN_SET;                                                            /* SPI不是能                    */
-    SCLK_SET;                                                           /* 时钟信号初始化成高电平       */
+    SCLK_CLR;                                                           /* 时钟信号初始化成高电平       */
 //    /*
 //    *  SPI通信配置
 //    */
@@ -119,9 +119,10 @@ uchar spiByteRW (uchar ucByte)
         ucByte <<= 1;
         SCLK_SET;
         ucByte |= spiMISO();                                            /* 读出数据                     */
+        //dat <<= 1;
         SCLK_CLR;
     }
-    return ucByte;
+    return  ucByte;
 }
 /*********************************************************************************************************
 ** Function name:      spiRegRW

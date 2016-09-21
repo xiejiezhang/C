@@ -165,7 +165,8 @@ void main(void)
     uchar ucRxBuf[10] = {0};
     uchar ucStep   = 1;
     uchar ucState  = 0; 
-    uchar ucMasterFlag = 1;
+    uchar ucMasterFlag = 0;
+    uchar flag  = 0; 
 /*
 *  初始化
 */
@@ -173,8 +174,13 @@ void main(void)
     gpioInit();                                                         /* GPIO初始化                   */
     timerInit();                                                        /* 定时器初始化                 */
     spiInit();
-    while (0!=nrfInit()) {
-        ledRedToggle(); 
+    // TRISC &= ~(0x01<<MOSI_BIT);                                          /* RC7: CSn           配置为输出*/
+   while (0!=nrfInit()) {
+     // while (1) {
+        //nrfInit();
+        ledRedOpen(); 
+        //flag ? MOSI_CLR : MOSI_SET;
+        //flag = flag ? 0 : 1;
         usDelay(200);
     }                                                          /* 无线2.4初始化                */ 
     
@@ -191,7 +197,7 @@ void main(void)
         //}
         usDelay(200);
     }
-    
+     
 	while(1)
 	{	
         if (TMR1IF == 1) {
@@ -215,6 +221,7 @@ void main(void)
                     
                 nrfSetTxMode(ucTxBuf); 
                 ledByteDisplay(ucTxBuf[0]++);
+                checkACK();
                 //nrfRxModeSet();
                 //if (nrfPacketRx(ucRxBuf)) {                             /* 接收数据                     */
                     //ledByteDisplay(ucRxBuf[0]);   
@@ -225,7 +232,7 @@ void main(void)
                 if (nrfPacketRx(ucRxBuf)) {                             /* 接收数据                     */
                     ledByteDisplay(ucRxBuf[0]);   
                 } else {
-					ledRedOpen();    
+					    
                 } 
                 ucRxBuf[0] = 0x00;
             }
