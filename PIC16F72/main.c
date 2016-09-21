@@ -161,8 +161,8 @@ void main(void)
 {
     uchar ucIndex = 0;
     uchar ucTmp = 0;
-    uchar ucTxBuf[10] = {0};
-    uchar ucRxBuf[10] = {0};
+    uchar ucTxBuf[20] = {0};
+    uchar ucRxBuf[20] = {0};
     uchar ucStep   = 1;
     uchar ucState  = 0; 
     uchar ucMasterFlag = 0;
